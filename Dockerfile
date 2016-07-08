@@ -15,7 +15,7 @@ RUN chown root: /etc/apt/sources.list.d/passenger.list
 RUN chmod 600 /etc/apt/sources.list.d/passenger.list
 RUN sed -i 's/archive.ubuntu.com/55.archive.ubuntu.com/g' /etc/apt/sources.list
 RUN apt-get update
-# RUN apt-get install -y --force-yes nginx-full passenger
+RUN apt-get install -y --force-yes nginx-full passenger
 RUN apt-get install -y --force-yes libpq-dev
 RUN apt-get install -y --force-yes nodejs
 RUN apt-get install -y --force-yes imagemagick
@@ -41,6 +41,7 @@ RUN echo "listen_addresses='*'" >> /etc/postgresql/9.5/main/postgresql.conf
 
 # Install NGINX
 ADD ./nginx.conf /etc/nginx.conf
+ADD ./start_services /usr/local/bin
 
 # Install rbenv and ruby-build
 RUN git clone https://github.com/sstephenson/rbenv.git /root/.rbenv
@@ -49,7 +50,8 @@ RUN /root/.rbenv/plugins/ruby-build/install.sh
 ENV PATH /root/.rbenv/bin:$PATH
 RUN echo 'eval "$(rbenv init -)"' >> /etc/profile.d/rbenv.sh # or /etc/profile
 RUN echo 'eval "$(rbenv init -)"' >> .bashrc
-RUN rbenv install 2.1.2
+RUN chmod +x /etc/profile.d/rbenv.sh
+# RUN rbenv install 2.1.2
 
 # Install multiple versions of ruby
 ENV CONFIGURE_OPTS --disable-install-doc
@@ -64,3 +66,7 @@ VOLUME /app
 EXPOSE 80
 EXPOSE 3000
 EXPOSE 5432
+
+CMD ["/usr/local/bin/start_services"]
+
+ENTRYPOINT ["/bin/bash"]
