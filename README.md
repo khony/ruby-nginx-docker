@@ -2,10 +2,10 @@ Docker container with Ubuntu 16.04, RbEnv, Ruby, Nginx, Passenger, PostgreSQL an
 
 ## To build:
 ```
-docker build -t container_name .
+docker build -t dev:rails .
 ```
 
 ## To run:
 ```
-docker run -v /my/code/dir:/src container_name
+docker run -t -i /my/code/dir:/app dev:rails
 ```
